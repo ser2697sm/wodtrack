@@ -1,0 +1,15 @@
+services:
+  training-db:
+    image: postgres:16
+    container_name: training-db
+    environment:
+      POSTGRES_DB: training_db
+      POSTGRES_USER: wodtrack
+      POSTGRES_PASSWORD: wodtrack
+    ports:
+      - "5432:5432"
+    volumes:
+      - training-data:/var/lib/postgresql/data
+
+volumes:
+  training-data:
