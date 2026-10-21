@@ -1,12 +1,14 @@
 package com.wodtrack.training.athlete;
 
+import com.wodtrack.training.athlete.dto.AthleteResponse;
 import com.wodtrack.training.athlete.dto.CreateAthleteRequest;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/Athlete")
+@RequestMapping("/athletes")
 public class AthleteController {
 
     private final AthleteService athleteService;
@@ -16,12 +18,12 @@ public class AthleteController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createAthlete(@RequestBody @Valid CreateAthleteRequest createAthleteRequest) {
-        return ResponseEntity.ok(athleteService.saveAthete(createAthleteRequest));
+    public ResponseEntity<AthleteResponse> createAthlete(@RequestBody @Valid CreateAthleteRequest createAthleteRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(athleteService.saveAthlete(createAthleteRequest));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> viewAthlete(@PathVariable Long id) {
-        return ResponseEntity.ok(athleteService.viewAthete(id));
+    public ResponseEntity<AthleteResponse> viewAthlete(@PathVariable Long id) {
+        return ResponseEntity.ok(athleteService.viewAthlete(id));
     }
 }

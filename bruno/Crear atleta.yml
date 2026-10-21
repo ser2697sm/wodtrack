@@ -1,0 +1,24 @@
+info:
+  name: Crear atleta
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:8081/athletes
+  body:
+    type: json
+    data: |-
+      {
+        "firstName":"prueba",
+        "lastName":"prueba",
+        "email":"Prueba2@prueba.com"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

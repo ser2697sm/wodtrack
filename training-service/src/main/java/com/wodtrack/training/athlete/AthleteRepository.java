@@ -5,4 +5,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AthleteRepository extends JpaRepository<Athlete,Long> {
+
+    boolean existsByEmail(String email);
 }

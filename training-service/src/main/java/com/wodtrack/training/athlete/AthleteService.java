@@ -3,10 +3,10 @@ package com.wodtrack.training.athlete;
 import com.wodtrack.training.athlete.dto.AthleteResponse;
 import com.wodtrack.training.athlete.dto.CreateAthleteRequest;
 import com.wodtrack.training.common.exception.ConflictException;
-import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
+import com.wodtrack.training.common.exception.ResourceNotFoundException;
 
-import java.time.OffsetDateTime;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AthleteService {
@@ -17,32 +17,32 @@ public class AthleteService {
         this.athleteRepository = athleteRepository;
     }
 
-    public AthleteResponse saveAthete(CreateAthleteRequest createAthleteRequest) {
+    public AthleteResponse saveAthlete(CreateAthleteRequest createAthleteRequest) {
+
+        String email = createAthleteRequest.email().trim().toLowerCase();
+
+        if(athleteRepository.existsByEmail(email)) {
+            throw new ConflictException("El email ya existe");
+        }
 
         Athlete athlete = Athlete.builder()
                 .firstName(createAthleteRequest.firstName())
                 .lastName(createAthleteRequest.lastName())
-                .email(createAthleteRequest.email())
-                .createdAt(OffsetDateTime.now())
+                .email(email)
                 .build();
 
-        athleteRepository.save(athlete);
+        Athlete saved = athleteRepository.save(athlete);
 
-        return new AthleteResponse(createAthleteRequest.firstName(),
-                createAthleteRequest.lastName(),
-                createAthleteRequest.email());
+        return AthleteResponse.from(saved);
     }
 
-    @Transactional
-    public AthleteResponse viewAthete(Long id) {
-        Athlete athlete = athleteRepository.findById(id).orElseThrow(() -> {
-            throw new ConflictException("Atleta no encontrado con id " + id);
-        });
+    @Transactional(readOnly = true)
+    public AthleteResponse viewAthlete(Long id) {
+        Athlete athlete = athleteRepository.findById(id).orElseThrow(() ->
+            new ResourceNotFoundException("Atleta no encontrado con id " + id)
+        );
 
-        return new AthleteResponse(athlete.getFirstName(),
-                athlete.getLastName(),
-                athlete.getEmail());
-
+        return AthleteResponse.from(athlete);
     }
 
 }

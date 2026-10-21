@@ -1,15 +1,15 @@
 package com.wodtrack.training.athlete.dto;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record CreateAthleteRequest(
-        @NotNull(message = "El nombre es obligatoria")
+        @NotBlank(message = "El nombre es obligatorio")
         String firstName,
-        @NotNull(message = "El apellido es obligatoria")
+        @NotBlank(message = "El apellido es obligatorio")
         String lastName,
-        @NotNull(message = "El email es obligatoria")
+        @NotBlank(message = "El email es obligatorio")
         @Email(message = "El formato del email no es válido")
         @Size(max = 255, message = "El email no puede superar los 255 caracteres")
         String email

@@ -128,8 +128,8 @@ El esquema lo gestiona **Flyway** (`src/main/resources/db/migration`); Hibernate
 | Método | Endpoint | Descripción | Estado |
 |---|---|---|---|
 | GET | `/actuator/health` | Estado del servicio | ✅ |
-| POST | `/athletes` | Crear atleta | 🔜 |
-| GET | `/athletes/{id}` | Ver atleta | 🔜 |
+| POST | `/athletes` | Crear atleta | ✅  |
+| GET | `/athletes/{id}` | Ver atleta | ✅  |
 | GET / POST | `/exercises` | Listar / crear ejercicios | 🔜 |
 | POST | `/athletes/{id}/workouts` | Registrar un entreno | 🔜 |
 | GET | `/athletes/{id}/workouts?from=&to=` | Entrenos en un rango de fechas | 🔜 |
@@ -172,7 +172,7 @@ cd training-service
 
 ### Fase 1 — Microservicios con Kafka
 
-- [ ] **Semana 1** — Repositorio, `training-service` con Spring Boot 4 y PostgreSQL en Docker
+- [X] **Semana 1** — Repositorio, `training-service` con Spring Boot 4 y PostgreSQL en Docker
 - [ ] **Semana 2** — CRUD de entrenos y marcas, validaciones y migraciones con Flyway
 - [ ] **Semana 3** — Tests con Testcontainers y CI con GitHub Actions
 - [ ] **Semana 4** — Kafka en Docker Compose
