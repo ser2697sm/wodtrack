@@ -6,12 +6,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import tools.jackson.databind.exc.InvalidFormatException;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -171,6 +175,59 @@ public class GlobalExceptionHandler {
                         "CONFLICT",
                         "El recurso ya existe o viola una restricción de datos",
                         HttpStatus.CONFLICT.value(),
+                        LocalDateTime.now(),
+                        getCorrelationId(request),
+                        Map.of(),
+                        request.getRequestURI()
+                )
+        );
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleNotReadable(
+            HttpMessageNotReadableException ex,
+            HttpServletRequest request
+    ) {
+        String code = "MALFORMED_REQUEST";
+        String message = "El JSON de la petición está mal formado";
+        Map<String, String> errors = new HashMap<>();
+
+        if (ex.getCause() instanceof InvalidFormatException ife
+                && ife.getTargetType() != null
+                && ife.getTargetType().isEnum()
+                && !ife.getPath().isEmpty()) {
+
+            String field = ife.getPath().getLast().getPropertyName();
+            String allowed = Arrays.toString(ife.getTargetType().getEnumConstants());
+
+            code = "VALIDATION_ERROR";
+            message = "El campo '" + field + "' tiene un valor no permitido";
+            errors.put(field, "'" + ife.getValue() + "' no es válido. Valores permitidos: " + allowed);
+        }
+
+        return ResponseEntity.badRequest().body(
+                new ErrorResponse(
+                        code,
+                        message,
+                        HttpStatus.BAD_REQUEST.value(),
+                        LocalDateTime.now(),
+                        getCorrelationId(request),
+                        errors,
+                        request.getRequestURI()
+                )
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatch(
+            MethodArgumentTypeMismatchException ex,
+            HttpServletRequest request
+    ) {
+        return ResponseEntity.badRequest().body(
+                new ErrorResponse(
+                        "BAD_REQUEST",
+                        "El parámetro '" + ex.getName() + "' no tiene un formato válido",
+                        HttpStatus.BAD_REQUEST.value(),
                         LocalDateTime.now(),
                         getCorrelationId(request),
                         Map.of(),
