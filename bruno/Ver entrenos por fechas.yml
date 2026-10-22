@@ -1,0 +1,23 @@
+info:
+  name: Ver entrenos por fechas
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: http://localhost:8081/athletes/1/workouts?from=2020-10-22&to=2020-10-21
+  params:
+    - name: from
+      value: 2020-10-22
+      type: query
+    - name: to
+      value: 2020-10-21
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

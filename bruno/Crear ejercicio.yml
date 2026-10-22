@@ -1,11 +1,18 @@
 info:
-  name: Vew exercise copy
+  name: Crear ejercicio
   type: http
   seq: 4
 
 http:
-  method: GET
+  method: POST
   url: http://localhost:8081/exercises
+  body:
+    type: json
+    data: |-
+      {
+          "name": "Burpees",
+          "type": "CARDIO"
+        }
   auth: inherit
 
 settings:

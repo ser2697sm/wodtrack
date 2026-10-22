@@ -7,7 +7,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -228,6 +230,42 @@ public class GlobalExceptionHandler {
                         "BAD_REQUEST",
                         "El parámetro '" + ex.getName() + "' no tiene un formato válido",
                         HttpStatus.BAD_REQUEST.value(),
+                        LocalDateTime.now(),
+                        getCorrelationId(request),
+                        Map.of(),
+                        request.getRequestURI()
+                )
+        );
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse> handleMissingParam(
+            MissingServletRequestParameterException ex,
+            HttpServletRequest request
+    ) {
+        return ResponseEntity.badRequest().body(
+                new ErrorResponse(
+                        "VALIDATION_ERROR",
+                        "Falta el parámetro '" + ex.getParameterName() + "'",
+                        HttpStatus.BAD_REQUEST.value(),
+                        LocalDateTime.now(),
+                        getCorrelationId(request),
+                        Map.of(ex.getParameterName(), "Es obligatorio"),
+                        request.getRequestURI()
+                )
+        );
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleMethodNotSupported(
+            HttpRequestMethodNotSupportedException ex,
+            HttpServletRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+                new ErrorResponse(
+                        "METHOD_NOT_ALLOWED",
+                        "El método " + ex.getMethod() + " no está permitido en esta ruta",
+                        HttpStatus.METHOD_NOT_ALLOWED.value(),
                         LocalDateTime.now(),
                         getCorrelationId(request),
                         Map.of(),

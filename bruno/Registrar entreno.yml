@@ -1,0 +1,27 @@
+info:
+  name: Registrar entreno
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: http://localhost:8081/athletes/1/workouts
+  body:
+    type: json
+    data: |-
+      {
+        "date": "2026-10-22",
+        "notes": "buen entreno",
+        "entries": [
+          { "exerciseId": 1, "value": 20 },
+          { "exerciseId": 1, "value": 5 }
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

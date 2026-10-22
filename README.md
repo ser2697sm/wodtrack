@@ -131,8 +131,8 @@ El esquema lo gestiona **Flyway** (`src/main/resources/db/migration`); Hibernate
 | POST | `/athletes` | Crear atleta | ✅  |
 | GET | `/athletes/{id}` | Ver atleta | ✅  |
 | GET / POST | `/exercises` | Listar / crear ejercicios | ✅ |
-| POST | `/athletes/{id}/workouts` | Registrar un entreno | 🔜 |
-| GET | `/athletes/{id}/workouts?from=&to=` | Entrenos en un rango de fechas | 🔜 |
+| POST | `/athletes/{id}/workouts` | Registrar un entreno | ✅ |
+| GET | `/athletes/{id}/workouts?from=&to=` | Entrenos en un rango de fechas | ✅ |
 | GET | `/athletes/{id}/records` | Marcas personales actuales | 🔜 |
 
 ### stats-service (`:8082`)
